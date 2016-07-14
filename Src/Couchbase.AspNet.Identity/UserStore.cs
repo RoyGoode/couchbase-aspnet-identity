@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Couchbase.N1QL;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json.Linq;
 
 namespace Couchbase.AspNet.Identity
 {
@@ -93,17 +94,21 @@ namespace Couchbase.AspNet.Identity
         /// <exception cref="Exception">Any client error condition that cannot be resolved.</exception>
         public async Task<T> FindByNameAsync(string userName)
         {
-            var query = new QueryRequest($"SELECT * FROM `{_bucket.Name}` db WHERE db.type = 'user' AND db.username = $1");
-            query.AddPositionalParameter(userName);
+            var query = new QueryRequest($"SELECT * FROM `{_bucket.Name}` WHERE type = 'user' AND username = '{userName}'");
 
-            var user = await _bucket.QueryAsync<T>(query);
+            var result = await _bucket.QueryAsync<JObject>(query);
 
-            if (!user.Rows.Any())
+            if (result.Rows.Any())
             {
-                return default(T);
+                var firstRow = result.Rows.FirstOrDefault();
+                if (firstRow != null)
+                {
+                    var user = firstRow[_bucket.Name];
+                    return user.ToObject<T>();
+                }
             }
 
-            return user.Rows.FirstOrDefault();
+            return default(T);
         }
 
         /// <summary>
@@ -535,17 +540,21 @@ namespace Couchbase.AspNet.Identity
         /// <exception cref="Exception">Any client error condition.</exception>
         public async Task<T> FindByEmailAsync(string email)
         {
-            var query = new QueryRequest($"SELECT * FROM `{_bucket.Name}` db WHERE db.type = 'user' AND db.email = $1");
-            query.AddPositionalParameter(email);
+            var query = new QueryRequest($"SELECT * FROM `{_bucket.Name}` WHERE type = 'user' AND email = '{email}'");
 
-            var user = await _bucket.QueryAsync<T>(query);
+            var result = await _bucket.QueryAsync<JObject>(query);
 
-            if (!user.Rows.Any())
+            if (result.Rows.Any())
             {
-                return default(T);
+                var firstRow = result.Rows.FirstOrDefault();
+                if (firstRow != null)
+                {
+                    var user = firstRow[_bucket.Name];
+                    return user.ToObject<T>();
+                }
             }
 
-            return user.Rows.FirstOrDefault();
+            return default(T);
         }
     }
 }
