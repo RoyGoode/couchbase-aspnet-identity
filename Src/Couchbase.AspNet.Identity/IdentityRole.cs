@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace Couchbase.AspNet.Identity
 {
@@ -8,14 +9,6 @@ namespace Couchbase.AspNet.Identity
     /// </summary>
     public class IdentityRole : IRole
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IdentityRole"/> class.
-        /// </summary>
-        public IdentityRole()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityRole"/> class.
         /// </summary>
@@ -42,7 +35,8 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The identifier.
         /// </value>
-        public string Id { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Gets or sets the name.
@@ -50,6 +44,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The name.
         /// </value>
+        [JsonProperty("name")]
         public string Name { get; set; }
     }
 }

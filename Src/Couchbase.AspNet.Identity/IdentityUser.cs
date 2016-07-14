@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace Couchbase.AspNet.Identity
 {
@@ -15,10 +16,6 @@ namespace Couchbase.AspNet.Identity
         /// </summary>
         public IdentityUser()
         {
-            UserLoginIds = new List<string>();
-            Roles = new List<IdentityRole>();
-            Claims = new List<Claim>();
-            Id = Guid.NewGuid().ToString();
         }
 
         /// <summary>
@@ -26,7 +23,6 @@ namespace Couchbase.AspNet.Identity
         /// </summary>
         /// <param name="username">The username.</param>
         public IdentityUser(string username)
-            : this()
         {
             UserName = username;
         }
@@ -37,7 +33,8 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The identifier used to uniquely identify the user.
         /// </value>
-        public string Id { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Gets or sets the name of the user.
@@ -45,6 +42,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The name of the user.
         /// </value>
+        [JsonProperty("username")]
         public string UserName { get; set; }
 
         /// <summary>
@@ -53,6 +51,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The email.
         /// </value>
+        [JsonProperty("email")]
         public string Email { get; set; }
 
         /// <summary>
@@ -61,6 +60,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         ///   <c>true</c> if the user's email has been confirmed; otherwise, <c>false</c>.
         /// </value>
+        [JsonProperty("emailConfirmed")]
         public bool EmailConfirmed { get; set; }
 
         /// <summary>
@@ -69,6 +69,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The password hash.
         /// </value>
+        [JsonProperty("passwordHash")]
         public string PasswordHash { get; set; }
 
         /// <summary>
@@ -77,6 +78,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The phone number.
         /// </value>
+        [JsonProperty("phoneNumber")]
         public string PhoneNumber { get; set; }
 
         /// <summary>
@@ -85,21 +87,25 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// <c>true</c> if the  <see cref="PhoneNumber"/>confirmed; otherwise, <c>false</c>.
         /// </value>
+        [JsonProperty("phoneNumberConfirmed")]
         public bool PhoneNumberConfirmed { get; set; }
 
         /// <summary>
         /// DateTime in UTC when lockout ends, any time in the past is considered not locked out.
         /// </summary>
+        [JsonProperty("lockoutEndDateUtc")]
         public DateTime? LockoutEndDateUtc { get; set; }
 
         /// <summary>
         /// Is lockout enabled for this user
         /// </summary>
+        [JsonProperty("lockoutEnabled")]
         public bool LockoutEnabled { get; set; }
 
         /// <summary>
         /// Used to record failures for the purposes of lockout
         /// </summary>
+        [JsonProperty("accessFailedCount")]
         public int AccessFailedCount { get; set; }
 
         /// <summary>
@@ -108,6 +114,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         ///   <c>true</c> if two factor authentication is enabled; otherwise, <c>false</c>.
         /// </value>
+        [JsonProperty("twoFactorEnabled")]
         public bool TwoFactorEnabled { get; set; }
 
         /// <summary>
@@ -116,7 +123,8 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The user login infos.
         /// </value>
-        public IList<string> UserLoginIds { get; set; }
+        [JsonProperty("userLoginIds")]
+        public IList<string> UserLoginIds { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the security stamp.
@@ -124,6 +132,7 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The security stamp.
         /// </value>
+        [JsonProperty("securityStamp")]
         public string SecurityStamp { get; set; }
 
         /// <summary>
@@ -132,7 +141,8 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The roles.
         /// </value>
-        public ICollection<IdentityRole> Roles { get; set; }
+        [JsonProperty("roles")]
+        public ICollection<IdentityRole> Roles { get; set; } = new List<IdentityRole>();
 
         /// <summary>
         /// Gets or sets the claims for the user.
@@ -140,6 +150,10 @@ namespace Couchbase.AspNet.Identity
         /// <value>
         /// The claims.
         /// </value>
-        public ICollection<Claim> Claims { get; set; }
+        [JsonProperty("claims")]
+        public ICollection<Claim> Claims { get; set; } = new List<Claim>();
+
+        [JsonProperty("type")]
+        public string Type { get; set; } = "user";
     }
 }

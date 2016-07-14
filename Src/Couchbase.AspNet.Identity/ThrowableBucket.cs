@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Couchbase.Core;
 using Couchbase.IO;
+using Couchbase.N1QL;
 
 namespace Couchbase.AspNet.Identity
 {
@@ -15,9 +16,25 @@ namespace Couchbase.AspNet.Identity
     {
         private IBucket _bucket;
 
+        public string Name => _bucket.Name;
+
         public ThrowableBucket(IBucket bucket)
         {
-            _bucket = bucket;
+            _bucket = bucket; 
+        }
+
+        public async Task<IQueryResult<T>> QueryAsync<T>(QueryRequest query)
+        {
+            var result = await _bucket.QueryAsync<T>(query);
+            if (result.Success)
+            {
+                return result;
+            }
+            if (result.Exception != null)
+            {
+                throw result.Exception;
+            }
+            throw new CouchbaseException(query.GetOriginalStatement());
         }
 
         /// <summary>

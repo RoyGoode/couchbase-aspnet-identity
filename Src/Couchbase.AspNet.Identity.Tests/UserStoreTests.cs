@@ -312,8 +312,8 @@ namespace Couchbase.AspNet.Identity.Tests
             var mockBucket = new Mock<IBucket>();
             mockBucket.SetupGet(e => e.Name).Returns("default");
             var store = new UserStore<IdentityUser>(new ThrowableBucket(mockBucket.Object));
-
-            Assert.IsNotNullOrEmpty(await store.GetPasswordHashAsync(user));
+            
+            Assert.IsNotNull(await store.GetPasswordHashAsync(user));
         }
 
         [Test]
